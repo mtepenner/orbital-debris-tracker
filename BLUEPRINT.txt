@@ -1,0 +1,69 @@
+orbital-debris-tracker/
+│
+├── .github/                             # Automated CI/CD pipelines
+│   └── workflows/
+│       ├── test-compute.yml             # Unit tests for the SGP4 propagation and Octree math
+│       └── build-deploy.yml
+│
+├── tle_ingestion/                       # Go: The Data Synchronization Worker
+│   ├── cmd/
+│   │   └── syncer/
+│   │       └── main.go                  # Cron-like worker that runs daily/hourly
+│   ├── internal/
+│   │   ├── spacetrack/                  # API client for Space-Track.org
+│   │   └── parser/                      # Parses raw 3-line text files into structured structs
+│   ├── go.mod
+│   └── Dockerfile
+│
+├── compute_engine/                      # Go or C++: High-Performance Math & Conjunction Engine
+│   ├── cmd/
+│   │   └── engine/
+│   │       └── main.go                  # gRPC server listening for prediction requests
+│   ├── internal/
+│   │   ├── sgp4/                        # Orbital propagation algorithms (predicts location at Time = T)
+│   │   ├── spatial/
+│   │   │   └── octree.go                # 3D spatial partitioning to avoid O(N^2) collision checks
+│   │   └── conjunction/
+│   │       └── risk_calc.go             # Calculates Probability of Collision (Pc) and Miss Distance
+│   ├── go.mod
+│   └── Dockerfile
+│
+├── api_gateway/                         # Python + FastAPI: Client-Facing API
+│   ├── app/
+│   │   ├── api/
+│   │   │   └── routes/
+│   │   │       ├── catalog.py           # Endpoints to search/filter the satellite database
+│   │   │       └── conjunctions.py      # Streams high-risk collision alerts to the frontend
+│   │   ├── core/
+│   │   │   └── redis_client.py          # Fast caching for current orbital positions
+│   │   └── main.py                      # FastAPI application routing
+│   ├── requirements.txt                 # Includes fastapi, redis, grpcio
+│   └── Dockerfile
+│
+├── frontend/                            # React + TypeScript: The 3D Orbital Command Center
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── GlobeVisualizer.tsx      # WebGL canvas rendering Earth and the debris cloud
+│   │   │   ├── ConjunctionAlerts.tsx    # Feed of upcoming close approaches (TCA - Time of Closest Approach)
+│   │   │   └── ObjectInspector.tsx      # Sidebar detailing specific satellite/debris telemetry
+│   │   ├── rendering/
+│   │   │   ├── instanced_mesh.ts        # Highly optimized WebGL draw calls for 30,000+ points
+│   │   │   └── shaders/                 # Custom GLSL shaders for glowing orbits or risk-color mapping
+│   │   ├── App.tsx
+│   │   └── index.tsx
+│   ├── package.json                     # Needs three.js (or cesium), react-three-fiber
+│   └── Dockerfile
+│
+├── k8s/                                 # Production infrastructure scaling
+│   ├── tle-cronjob.yaml                 # Kubernetes CronJob to pull new data daily
+│   ├── compute-engine.yaml              # CPU-heavy pods for running propagation math
+│   ├── api-gateway.yaml
+│   ├── redis.yaml                       # In-memory store for instantaneous position lookups
+│   └── postgres.yaml                    # Persistent storage for historical catalog data
+│
+├── docker-compose.yml                   # Spins up the DBs, Go engine, FastAPI, and React
+├── Makefile                             # Build scripts and protobuf compilation commands
+└── README.md
+
+
+
