@@ -1,0 +1,21 @@
+name: Build Deploy Images
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build compute engine image
+        run: docker build -t orbital-debris-tracker/compute-engine:latest ./compute_engine
+
+      - name: Build API gateway image
+        run: docker build -t orbital-debris-tracker/api-gateway:latest ./api_gateway
+
+      - name: Build frontend image
+        run: docker build -t orbital-debris-tracker/frontend:latest ./frontend

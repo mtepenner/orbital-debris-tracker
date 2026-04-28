@@ -45,11 +45,20 @@ The Orbital Debris Tracker is a high-performance, full-stack application designe
    docker-compose up -d
    ```
 
+4. Validate the non-containerized slices locally:
+   ```bash
+   cd tle_ingestion && go test ./...
+   cd ../compute_engine && go test ./...
+   python -m compileall api_gateway/app
+   cd ../frontend && npm install && npm run build
+   ```
+
 ## 💻 Usage
 
 * **Access the 3D Visualizer:** Open your browser and navigate to `http://localhost:3000` (or your configured port) to view the Globe Visualizer and debris cloud.
 * **Monitor Conjunctions:** Use the "Conjunction Alerts" sidebar in the UI to view real-time feeds of upcoming close approaches and assess the calculated collision risks.
 * **Filter Catalog Data:** Click on individual objects within the WebGL canvas to open the "Object Inspector" and view specific satellite or debris telemetry.
+* **API Surfaces:** The compute service exposes `GET /health` and `POST /predict` on port `7001`; the FastAPI gateway exposes `GET /catalog`, `GET /catalog/{id}`, `GET /conjunctions`, and `WS /conjunctions/stream` on port `8000`.
 
 ## 📂 Project Structure
 * `/tle_ingestion`: Go worker for syncing and parsing TLE data from Space-Track.org.
@@ -64,3 +73,4 @@ Contributions are highly encouraged! Whether it's optimizing a GLSL shader, impr
 
 ## 📄 License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+

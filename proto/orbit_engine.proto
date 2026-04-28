@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package orbitengine;
+
+message CatalogObject {
+  string object_id = 1;
+  string name = 2;
+  double inclination_deg = 3;
+  double raan_deg = 4;
+  double eccentricity = 5;
+  double mean_anomaly_deg = 6;
+  double mean_motion_rev_per_day = 7;
+}
+
+message PredictionRequest {
+  repeated CatalogObject objects = 1;
+  int32 horizon_minutes = 2;
+}
+
+message Position {
+  string object_id = 1;
+  double x_km = 2;
+  double y_km = 3;
+  double z_km = 4;
+}
+
+message Conjunction {
+  string primary_id = 1;
+  string secondary_id = 2;
+  double miss_distance_km = 3;
+  double probability_collision = 4;
+  string tca = 5;
+}

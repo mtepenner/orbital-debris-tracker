@@ -1,0 +1,26 @@
+package spacetrack
+
+import (
+	"context"
+	"os"
+)
+
+func FetchCatalog(ctx context.Context) (string, error) {
+	_ = ctx
+	if raw := os.Getenv("SPACETRACK_SAMPLE_CATALOG"); raw != "" {
+		return raw, nil
+	}
+	return sampleCatalog(), nil
+}
+
+func sampleCatalog() string {
+	return `ISS (ZARYA)
+1 25544U 98067A   26118.50109859  .00008064  00000+0  14714-3 0  9991
+2 25544  51.6400  62.8406 0006703  74.0625  39.8567 15.50003235 42167
+FENGYUN 1C DEB
+1 29716U 99025A   26118.44782917  .00000563  00000+0  23032-3 0  9990
+2 29716  98.6825 124.4100 0104321 195.1234 164.7012 14.17654241 18891
+COSMOS 1408 DEB
+1 54237U 82092CS  26118.34000211  .00040321  00000+0  19841-2 0  9994
+2 54237  82.5521 201.1183 0023411  24.4245 335.7572 15.21541021 11873`
+}
